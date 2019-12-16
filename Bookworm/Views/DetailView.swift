@@ -16,6 +16,13 @@ struct DetailView: View {
     
     let book: Book
     
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        
+        return formatter
+    }()
+    
     var body: some View {
         GeometryReader { geo in
             VStack {
@@ -23,14 +30,19 @@ struct DetailView: View {
                     Image(self.book.genre ?? "Fantasy")
                         .frame(maxWidth: geo.size.width)
                     
-                    Text(self.book.genre?.uppercased() ?? "Fantasy")
+                    HStack {
+                        Group {
+                            Text(self.book.genre?.uppercased() ?? "Fantasy")
+                            Text("|")
+                            Text("\(self.book.date!, formatter: Self.dateFormatter)")
+                        }
                         .font(.caption)
-                        .fontWeight(.black)
-                        .padding(8)
-                        .foregroundColor(.white)
-                        .background(Color.black.opacity(0.75))
-                        .clipShape(Capsule())
-                        .offset(x: -5, y: -5)
+                    }
+                    .padding(8)
+                    .foregroundColor(.white)
+                    .background(Color.black.opacity(0.75))
+                    .clipShape(Capsule())
+                    .offset(x: -5, y: -5)
                 }
                 
                 Text(self.book.author ?? "Unknown author")
@@ -79,6 +91,7 @@ struct DetailView_Previews: PreviewProvider {
         book.genre = "Fantasy"
         book.rating = 4
         book.review = "This was a great book; I really enjoed it."
+        book.date = Date()
         
         return NavigationView {
             DetailView(book: book)
